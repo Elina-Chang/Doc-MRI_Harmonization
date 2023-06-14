@@ -1,0 +1,113 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+
+class ResidualBlock(nn.Module):
+    def __init__(self, in_features):
+        super(ResidualBlock, self).__init__()
+
+        # two 3*3 CNN layers
+        conv_block = [nn.ReflectionPad2d(1), # reflection padded recommended in the paper
+                      nn.Conv2d(in_features, in_features, 3),
+                      nn.BatchNorm2d(in_features),
+                      nn.LeakyReLU(inplace=True),
+                      nn.ReflectionPad2d(1),
+                      nn.Conv2d(in_features, in_features, 3),
+                      nn.BatchNorm2d(in_features)]
+
+        self.conv_block = nn.Sequential(*conv_block)
+
+    def forward(self, x):
+        return x + self.conv_block(x) # the input to the block is concatenated to the output of the block, channel-wise.
+
+
+class Generator(nn.Module):
+    def __init__(self, input_nc, output_nc, n_residual_blocks=9):
+        super(Generator, self).__init__()
+
+        # Initial convolution block       
+        model = [nn.ReflectionPad2d(3),
+                 nn.Conv2d(input_nc, 64, 7), # A common choice is to keep the kernel size at 3x3 or 5x5.
+                                            # The first convolutional layer is often kept larger.
+                                            # Its size is less important as there is only one first layer,
+                                            # and it has fewer input channels: 3, 1 by color.
+                 nn.BatchNorm2d(64),
+                 nn.LeakyReLU(inplace=True)]
+
+        # Downsampling
+        in_features = 64
+        out_features = in_features * 2
+        for _ in range(2):
+            model += [nn.Conv2d(in_features, out_features, 3, stride=2, padding=1), # padding_mode=reflect in original paper
+                      nn.BatchNorm2d(out_features),
+                      nn.LeakyReLU(inplace=True)]
+            in_features = out_features
+            out_features = in_features * 2
+
+        # Residual blocks
+        for _ in range(n_residual_blocks):
+            model += [ResidualBlock(in_features)]
+
+        # Upsampling
+        out_features = in_features // 2
+        for _ in range(2):
+            model += [nn.ConvTranspose2d(in_features, out_features, 3, stride=2, padding=1, output_padding=1),
+                      nn.BatchNorm2d(out_features),
+                      nn.ReLU(inplace=True)]
+            in_features = out_features
+            out_features = in_features // 2
+
+        # Output layer
+        model += [nn.ReflectionPad2d(3),
+                  nn.Conv2d(64, output_nc, 7),
+                  nn.Tanh()]
+        # the model outputs pixel values with the shape as the input and pixel values are in the range [-1, 1],
+        # the latter is achieved by "tanh" activation function
+
+        self.model = nn.Sequential(*model)
+
+    def forward(self, x):
+        return self.model(x)
+
+
+class Discriminator(nn.Module):
+    def __init__(self, input_nc):
+        super(Discriminator, self).__init__()
+
+        # A bunch of convolutions one after another
+        model = [nn.Conv2d(input_nc, 64, 4, stride=2, padding=1),
+                 nn.LeakyReLU(0.2, inplace=True)]
+
+        model += [nn.Conv2d(64, 128, 4, stride=2, padding=1),
+                  nn.BatchNorm2d(128),
+                  nn.LeakyReLU(0.2, inplace=True)]
+
+        model += [nn.Conv2d(128, 256, 4, stride=2, padding=1),
+                  nn.BatchNorm2d(256),
+                  nn.LeakyReLU(0.2, inplace=True)]
+
+        model += [nn.Conv2d(256, 512, 4, padding=1),
+                  nn.BatchNorm2d(512),
+                  nn.LeakyReLU(0.2, inplace=True)]
+
+        # FCN classification layer
+        model += [nn.Conv2d(512, 1, 4, padding=1)]
+
+        self.model = nn.Sequential(*model)
+
+    def forward(self, x):
+        x = self.model(x)
+        # Average pooling and flatten
+        return F.avg_pool2d(x, x.size()[2:]).view(x.size()[0], -1)
+
+
+if __name__ == "__main__":
+    x = torch.rand(size=(5, 1, 459, 459))
+    generator = Generator(1, 1)
+    fake_img = generator(x)
+    print(fake_img.size())
+    discriminator = Discriminator(1)
+    out = discriminator(fake_img)
+    print(out.size())
+    print(out)

@@ -1,0 +1,2 @@
+1. data requirements: resampled and rescale to [0,1].
+2. data includes img_data and roi_data.

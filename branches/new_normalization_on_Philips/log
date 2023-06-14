@@ -1,0 +1,8 @@
+our goal: to choose a ideal cutoff value.
+our principle: to try out several cutoff ratio, and find one minimizing the std calculated by first order feature value.
+our steps: 1. ;
+           2. ;
+           3. feature extraction of the t2_sag_forFeatureExtractor and womb_roi_forFeatureExtractor, and get .csv file;
+           4. read .csv file to calculate std;
+           5. plot a scatter map to show those std values.
+our experiments: 1. calculate std on the feature value in Philips_ori_image_type_original(18).csv.

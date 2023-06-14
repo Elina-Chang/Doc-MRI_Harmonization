@@ -1,0 +1,4 @@
+1. model is the modified CycleGAN from train_3_3, adding a new identity loss with a decay lamda.
+2. different learning rate for G and D.
+2. dataset contains 3T data, all resampled and rescale to [0,1].
+3. GE data: 41 cases,895 slices; Philips data: 89 cases,2608 slices

@@ -1,0 +1,3 @@
+1. predict on 3T GE data, from "PhD/Data_renji/Data_3T_Norm1/GE_3T_Norm1".
+2. data requirements: resampled and after normalization1 and of course rescaled to [0,1].
+3. prediction is based on full size slices, and the result is also after normalization1.

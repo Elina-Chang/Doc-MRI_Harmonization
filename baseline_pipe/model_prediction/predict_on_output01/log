@@ -1,0 +1,4 @@
+1. predict on all GE data, from "PhD/Data_renji/GE".
+2. data requirements: resampled and after min-max normalization and off course rescaled to [0,1].
+3. prediction is based on full size slices.
+4. prediction is kind of blurry. why?

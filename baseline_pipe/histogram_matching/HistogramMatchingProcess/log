@@ -1,0 +1,17 @@
+----------------------matching_funcs.py--------------------
+1. perform the histogram matching of 3D src_data and 3D ref_data based on the averaged LUT.
+2. [def slice2LUT()]get the lookup table(LUT) for each pair of src_cdf(src_slice), ref_cdf(ref_slice).
+   data requirements: slice rescale to [0,4095], dtype=np.uint16.
+3. [def average_mutipleLUTs()]average the multiple LUT curves given one case.
+4. [loop_all_cases()]get the averaged LUT for all cases
+5. the result: LUTresults/case/: LUTarr.npy(the multiple LUT curves for slices given one case)
+                                 FinalLUT.npy(the averaged LUT curve given one case).
+6. [def MatchedUsingLUT()]get the matched data.
+7. the result: matched data for feature extractor in the dir
+   f"E:\PhD\Data_renji\Data_forFeatureExtractor\41GE\{case_name}\t2sag_newmatched.nii.gz"
+----------------------save_matching_results.py--------------------------
+1. perform the histogram matching on the 3D src_data and 3D ref_data.
+2. data requirements: 3D rescale to [0,1], dtype=np.float32.
+3. get the matched data.
+4. the result: matched data for feature extractor in the dir
+   "baseline_pipe/radiomics_feature_analysis/data_for_feature_extractor/GE_matched_data".

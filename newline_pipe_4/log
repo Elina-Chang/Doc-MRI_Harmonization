@@ -1,0 +1,2 @@
+1. the same model from newline_pipe_2 but with learning rate linearly decay to zero over the next 100 epochs.
+(as in vanilla cycleGAN paper).

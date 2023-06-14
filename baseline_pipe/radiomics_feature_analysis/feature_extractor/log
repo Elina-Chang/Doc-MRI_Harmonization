@@ -1,0 +1,8 @@
+1. extract the first order features with ImageType=Original.
+2. num of features: 18.
+3. store "*.csv" file in dir csv.
+
+
+4. extract the first order features and shape features with ImageType=Original.
+5. num of features: 18+14.
+6. store "*.csv" file in dir csv.

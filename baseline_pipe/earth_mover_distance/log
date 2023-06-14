@@ -1,0 +1,9 @@
+To Do ...
+1. calculate the earth-mover_distance metric.
+2. data requirements: 3T data, and check whether the data is resampled and rescaled to [0,1].
+3. experiment 1: calculate the distribution difference limited in roi region.
+    (1)group one:
+4. experiment 2: calculate the distribution difference in whole image region.
+    (1)group one: 3T GE data vs 3T Philips data.
+    (2)group two: 3T predicted GE data(PhilipsStyle GE data) vs Philips data.
+    (3)group three: 3T matched GE data vs Philips data.

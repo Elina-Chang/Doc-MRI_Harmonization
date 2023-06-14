@@ -1,0 +1,13 @@
+*.pth
+__pycache__/
+cyclegan_mri/
+CreateFigs&Tables4Essay/
+UIH_SIMENSE/
+*.tar
+.idea/
+checkpoints/
+*.svg
+*.npy
+*.png
+*.gz
+*.nii
